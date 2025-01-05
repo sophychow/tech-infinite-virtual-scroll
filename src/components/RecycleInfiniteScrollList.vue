@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <h1>无限滚动 + 虚拟列表示例</h1>
+  <div class="list-root">
+    <h1 class="list-title">无限滚动 + 虚拟列表示例</h1>
     
     <!-- 使用 RecycleScroller 替换原来的 virtual-list -->
     <RecycleScroller
@@ -78,17 +78,26 @@ export default {
 }
 </script>
 
-<style>
-.app-container {
-  /* max-width: 800px; */
-  margin: 0 auto;
-  padding: 20px;
+<style scoped>
+.list-root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* padding: 20px; */
+  box-sizing: border-box;
+}
+
+.list-title {
+  margin: 0 0 20px 0;
+  font-size: 24px;
 }
 
 .list-container {
-  /* height: 600px; */
+  flex: 1;
   border: 1px solid #eee;
   border-radius: 4px;
+  min-height: 0; /* 重要：让flex布局中的滚动正常工作 */
 }
 
 .list-item {

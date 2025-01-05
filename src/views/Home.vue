@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home-container">
     <RecycleInfiniteScrollList 
       :items="items"
       :loading="loading"
@@ -78,4 +78,11 @@ export default {
     this.loadMore()
   }
 }
-</script> 
+</script>
+
+<style scoped>
+.home-container {
+  height: 100%;
+  width: 100%;
+}
+</style> 

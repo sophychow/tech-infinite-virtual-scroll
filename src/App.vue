@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-root">
     <router-view></router-view>
   </div>
 </template>
@@ -11,14 +11,43 @@ export default {
 </script>
 
 <style>
-.app-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+/* 重置默认样式 */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
+/* 根容器样式 */
+.app-root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* 全局滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 列表相关样式 */
 .list-container {
-  height: 600px;
   border: 1px solid #eee;
   border-radius: 4px;
 }
