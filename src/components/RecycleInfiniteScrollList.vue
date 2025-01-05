@@ -80,13 +80,13 @@ export default {
 
 <style>
 .app-container {
-  max-width: 800px;
+  /* max-width: 800px; */
   margin: 0 auto;
   padding: 20px;
 }
 
 .list-container {
-  height: 600px;
+  /* height: 600px; */
   border: 1px solid #eee;
   border-radius: 4px;
 }
