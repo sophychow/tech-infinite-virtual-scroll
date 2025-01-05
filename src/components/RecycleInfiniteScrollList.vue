@@ -4,14 +4,16 @@
     
     <!-- 使用 RecycleScroller 替换原来的 virtual-list -->
     <RecycleScroller
+      ref="scroller"
       class="list-container"
       :items="items"
       :item-size="60"
       key-field="id"
       v-slot="{ item }"
       v-infinite-scroll="handleLoadMore"
-      :infinite-scroll-disabled="busy"
+      :infinite-scroll-disabled="scrollDisabled"
       :infinite-scroll-distance="10"
+      :infinite-scroll-immediate="false"
     >
       <div class="list-item">
         <div class="item-id">#{{ item.id }}</div>
@@ -24,13 +26,19 @@
 
     <!-- 加载状态 -->
     <div class="loading-container" v-if="loading">
-      加载中...
+      <div class="loading-spinner"></div>
+      <div class="loading-text">加载中...</div>
     </div>
 
     <!-- 错误提示 -->
     <div class="error-container" v-if="error">
       {{ error }}
       <button @click="handleRetry">重试</button>
+    </div>
+
+    <!-- 无更多数据提示 -->
+    <div class="no-more" v-if="!loading && !error && items.length > 0 && busy">
+      没有更多数据了
     </div>
   </div>
 </template>
@@ -67,12 +75,24 @@ export default {
       default: false
     }
   },
+  computed: {
+    scrollDisabled() {
+      return this.loading || this.error || this.busy
+    }
+  },
   methods: {
     handleLoadMore() {
+      if (this.scrollDisabled) return
       this.$emit('load-more')
     },
     handleRetry() {
       this.$emit('retry')
+    },
+    // 重置滚动位置
+    resetScroll() {
+      if (this.$refs.scroller) {
+        this.$refs.scroller.scrollToItem(0)
+      }
     }
   }
 }
@@ -84,13 +104,13 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
-  /* padding: 20px; */
   box-sizing: border-box;
 }
 
 .list-title {
   margin: 0 0 20px 0;
   font-size: 24px;
+  padding: 0 20px;
 }
 
 .list-container {
@@ -101,10 +121,16 @@ export default {
 }
 
 .list-item {
-  padding: 15px;
+  padding: 15px 20px;
   border-bottom: 1px solid #eee;
   display: flex;
   align-items: flex-start;
+  background: #fff;
+  transition: background-color 0.2s;
+}
+
+.list-item:hover {
+  background: #f9f9f9;
 }
 
 .item-id {
@@ -127,12 +153,35 @@ export default {
   margin: 0;
   font-size: 14px;
   color: #666;
+  line-height: 1.5;
 }
 
 .loading-container {
   text-align: center;
   padding: 20px;
   color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 14px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .error-container {
@@ -149,9 +198,18 @@ export default {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .error-container button:hover {
   background: #ff6666;
+}
+
+.no-more {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 14px;
+  background: #f9f9f9;
 }
 </style>
