@@ -2,19 +2,25 @@
   <div class="app-container">
     <h1>无限滚动 + 虚拟列表示例</h1>
     
-    <!-- 使用虚拟滚动列表包装器 -->
-    <virtual-list
+    <!-- 使用 RecycleScroller 替换原来的 virtual-list -->
+    <RecycleScroller
       class="list-container"
-      :data-key="'id'"
-      :data-sources="items"
-      :data-component="itemComponent"
-      :keeps="30"
-      :estimate-size="60"
+      :items="items"
+      :item-size="60"
+      key-field="id"
+      v-slot="{ item }"
       v-infinite-scroll="loadMore"
-      infinite-scroll-disabled="busy"
-      infinite-scroll-distance="10"
+      :infinite-scroll-disabled="busy"
+      :infinite-scroll-distance="10"
     >
-    </virtual-list>
+      <div class="list-item">
+        <div class="item-id">#{{ item.id }}</div>
+        <div class="item-content">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.content }}</p>
+        </div>
+      </div>
+    </RecycleScroller>
 
     <!-- 加载状态 -->
     <div class="loading-container" v-if="loading">
@@ -30,36 +36,17 @@
 </template>
 
 <script>
-import VirtualList from 'vue-virtual-scroll-list'
+import { RecycleScroller } from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import Vue from 'vue'
 import infiniteScroll from 'vue-infinite-scroll'
 
 Vue.use(infiniteScroll)
 
-// 列表项组件
-const ListItem = {
-  name: 'ListItem',
-  props: {
-    source: {
-      type: Object,
-      required: true
-    }
-  },
-  render(h) {
-    return h('div', { class: 'list-item' }, [
-      h('div', { class: 'item-id' }, ['#' + this.source.id]),
-      h('div', { class: 'item-content' }, [
-        h('h3', this.source.title),
-        h('p', this.source.content)
-      ])
-    ])
-  }
-}
-
 export default {
   name: 'App',
   components: {
-    VirtualList
+    RecycleScroller
   },
   data() {
     return {
@@ -68,7 +55,6 @@ export default {
       loading: false, // 加载状态
       error: null, // 错误信息
       busy: false, // 是否正在加载
-      itemComponent: ListItem // 列表项组件
     }
   },
   methods: {
@@ -134,7 +120,6 @@ export default {
   height: 600px;
   border: 1px solid #eee;
   border-radius: 4px;
-  overflow-y: auto;
 }
 
 .list-item {
